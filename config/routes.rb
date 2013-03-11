@@ -1,4 +1,7 @@
 Stockbot::Application.routes.draw do
+  resources :stock_prices
+
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
