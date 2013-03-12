@@ -85,7 +85,6 @@ class StockPricesScraper < Scraper
       row[:adj_close] =  Float(row[:adj_close])
     end
   end
-
 end
 
 
