@@ -22,4 +22,8 @@ class Scraper
   def get_page
     @agent.get(base_url, parameters)
   end
+
+  def scrape
+    get_page
+  end
 end

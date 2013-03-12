@@ -48,15 +48,15 @@ class StockPricesScraper < Scraper
     
   end
 
-  def get_data
-    header = []
+  def scrape
+    header = [:symbol]
     data = []
     rows = get_page.search("table[@class='#{TABLE_CLASS}']/tr//tr")
 
     rows.each do |row|
       next unless row.children.size == ROW_SIZE
 
-      temp_row = []
+      temp_row = [@symbol]
       row.children.each do |col|
         if col.name == 'th' and col['class'] == HEADER_CLASS
           header << col.text[/^[\w ]+\w/].parameterize('_').to_sym
@@ -65,7 +65,7 @@ class StockPricesScraper < Scraper
         end
       end
 
-      data << temp_row unless temp_row.empty?
+      data << temp_row unless temp_row.size == 1
     end
 
     data.collect! do |row|
@@ -90,7 +90,7 @@ end
 
 s = StockPricesScraper.new('MSFT', '2013-2-1', '2013-2-28', 'day')
 p s.data_url
-p s.get_data
+p s.scrape
 s.symbol = 'GOOG'
 # p s.data_url
-p s.get_data
+p s.scrape
