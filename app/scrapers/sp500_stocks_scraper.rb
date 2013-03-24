@@ -17,14 +17,10 @@ class SP500StocksScraper < Scraper
     "http://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
   end
 
-  def rows_xpath
-    "table[contains(@class, 'wikitable') and contains(@class, 'sortable')]"
-  end
-
-  def get_rows(xpath)
+  def get_rows
     table_xpath = '//table[@class="wikitable sortable"]'
     table_index = 0
-    table = self.page.search(table_xpath)[table_index]
+    table = get_page.search(table_xpath)[table_index]
     rows = table.search('.//tr')
   end
 end
@@ -32,7 +28,7 @@ end
 
 s = SP500StocksScraper.new
 p s.data_url
-p s.scrape(s.rows_xpath)
+p s.scrape[0..9]
 # s.symbol = 'GOOG'
 # p s.data_url
 # p s.scrape

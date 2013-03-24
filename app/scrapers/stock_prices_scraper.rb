@@ -37,6 +37,29 @@ class StockPricesScraper < Scraper
     }
   end
   
+  def clean_row(row)
+    out_row = {}
+    out_row[:symbol]    =  row[:symbol]
+    out_row[:date]      =  Time.parse(row[:date]).strftime('%Y-%m-%d')
+    out_row[:open]      =  Float(row[:open])
+    out_row[:high]      =  Float(row[:high])
+    out_row[:low]       =  Float(row[:low])
+    out_row[:close]     =  Float(row[:close])
+    out_row[:volume]    =  row[:volume].gsub(/[^0-9]/,'').to_i
+    out_row[:adj_close] =  Float(row[:adj_close])
+    out_row
+  end
+
+  def get_header
+    { symbol: @symbol }
+  end
+
+  def get_rows
+    get_page.search("table[@class='#{TABLE_CLASS}']/tr//tr")
+  end
+
+  protected
+
   def get_report_type(report_type)
     type = case report_type.to_s.downcase
            when 'daily', 'day' then 'd'
@@ -48,48 +71,12 @@ class StockPricesScraper < Scraper
     
   end
 
-  def scrape
-    header = [:symbol]
-    data = []
-    rows = get_page.search("table[@class='#{TABLE_CLASS}']/tr//tr")
-
-    rows.each do |row|
-      next unless row.children.size == ROW_SIZE
-
-      temp_row = [@symbol]
-      row.children.each do |col|
-        if col.name == 'th' and col['class'] == HEADER_CLASS
-          header << col.text[/^[\w ]+\w/].parameterize('_').to_sym
-        elsif col.name == 'td' and col['class'] == DATA_CLASS
-          temp_row << col.text
-        end
-      end
-
-      data << temp_row unless temp_row.size == 1
-    end
-
-    data.collect! do |row|
-      clean_row(Hash[header.zip(row)])
-    end
-  end
-
-  def clean_row(row)
-    out_row = {}
-    out_row[:date]      =  Time.parse(row[:date]).strftime('%Y-%m-%d')
-    out_row[:open]      =  Float(row[:open])
-    out_row[:high]      =  Float(row[:high])
-    out_row[:low]       =  Float(row[:low])
-    out_row[:close]     =  Float(row[:close])
-    out_row[:volume]    =  row[:volume].gsub(/[^0-9]/,'').to_i
-    out_row[:adj_close] =  Float(row[:adj_close])
-    out_row
-  end
 end
 
 
 s = StockPricesScraper.new('LNKD', '2013-2-1', '2013-2-28', 'day')
 p s.data_url
-p s.scrape
-# s.symbol = 'GOOG'
-# p s.data_url
-# p s.scrape
+p s.scrape[0..9]
+s.symbol = 'GOOG'
+p s.data_url
+p s.scrape[0..9]
