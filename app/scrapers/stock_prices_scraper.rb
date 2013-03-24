@@ -69,28 +69,27 @@ class StockPricesScraper < Scraper
     end
 
     data.collect! do |row|
-      Hash[header.zip(row)]
+      clean_row(Hash[header.zip(row)])
     end
-    clean_data(data)
   end
 
-  def clean_data(data)
-    data.each do |row|
-      row[:date]      =  Time.parse(row[:date]).strftime('%Y-%m-%d')
-      row[:open]      =  Float(row[:open])
-      row[:high]      =  Float(row[:high])
-      row[:low]       =  Float(row[:low])
-      row[:close]     =  Float(row[:close])
-      row[:volume]    =  row[:volume].gsub(',','').to_i
-      row[:adj_close] =  Float(row[:adj_close])
-    end
+  def clean_row(row)
+    out_row = {}
+    out_row[:date]      =  Time.parse(row[:date]).strftime('%Y-%m-%d')
+    out_row[:open]      =  Float(row[:open])
+    out_row[:high]      =  Float(row[:high])
+    out_row[:low]       =  Float(row[:low])
+    out_row[:close]     =  Float(row[:close])
+    out_row[:volume]    =  row[:volume].gsub(/[^0-9]/,'').to_i
+    out_row[:adj_close] =  Float(row[:adj_close])
+    out_row
   end
 end
 
 
-s = StockPricesScraper.new('MSFT', '2013-2-1', '2013-2-28', 'day')
+s = StockPricesScraper.new('LNKD', '2013-2-1', '2013-2-28', 'day')
 p s.data_url
 p s.scrape
-s.symbol = 'GOOG'
+# s.symbol = 'GOOG'
 # p s.data_url
-p s.scrape
+# p s.scrape
