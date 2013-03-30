@@ -39,7 +39,7 @@ class StockPricesScraper < Scraper
   
   def clean_row(row)
     out_row = {}
-    out_row[:symbol]    =  row[:symbol]
+    out_row[:symbol]    =  @symbol
     out_row[:date]      =  Time.parse(row[:date]).strftime('%Y-%m-%d')
     out_row[:open]      =  Float(row[:open])
     out_row[:high]      =  Float(row[:high])

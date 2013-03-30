@@ -51,10 +51,9 @@ class Scraper
     @page ||= self.agent.get(data_url)
   end
 
-  def scrape(options = { header: get_header , rows: get_rows })
-    header = options[:header].keys
-    start_row = header.collect { |key| options[:header][key] }
+  def scrape(options = { rows: get_rows })
     rows = options[:rows]
+    header = []
     data   = []
 
     row_size     = self.class::ROW_SIZE
@@ -65,7 +64,7 @@ class Scraper
       cols = row.search('./th|td')
       next unless cols.size == row_size
       
-      temp_row = start_row.dup
+      temp_row = []
       cols.each do |col|
         if col.name == 'th' or col['class'] == header_class
           next if col.text == nil
@@ -75,7 +74,7 @@ class Scraper
         end
       end
       
-      data << temp_row unless temp_row.size == start_row.size
+      data << temp_row unless temp_row.empty?
     end
 
     data.collect! do |row|
