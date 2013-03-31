@@ -38,7 +38,7 @@ class SP500StocksScraper < Scraper
     out_row
   end
 
-  def build_database
+  def build_database(options = {start_from: '2012-01-01'})
     found = 0
     end_date    = Date.today.strftime('%Y-%m-%d') 
     report_type = 'day'
@@ -48,7 +48,7 @@ class SP500StocksScraper < Scraper
       symbol = stock[:symbol] 
 
      if stock[:sp500_added_date].empty?
-       start_date  = '2012-01-01'
+       start_date  = options[:start_from]
      else
        start_date = stock[:sp500_added_date]
        found += 1
@@ -62,6 +62,3 @@ class SP500StocksScraper < Scraper
   end    
 
 end
-
-s = SP500StocksScraper.new
-s.build_database
