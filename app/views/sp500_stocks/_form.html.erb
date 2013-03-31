@@ -1,10 +1,10 @@
-<%= form_for(@sp500_company) do |f| %>
-  <% if @sp500_company.errors.any? %>
+<%= form_for(@sp500_stock) do |f| %>
+  <% if @sp500_stock.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@sp500_company.errors.count, "error") %> prohibited this sp500_company from being saved:</h2>
+      <h2><%= pluralize(@sp500_stock.errors.count, "error") %> prohibited this sp500_stock from being saved:</h2>
 
       <ul>
-      <% @sp500_company.errors.full_messages.each do |msg| %>
+      <% @sp500_stock.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>

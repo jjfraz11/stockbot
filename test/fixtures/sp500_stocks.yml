@@ -7,7 +7,7 @@ one:
   gics_sector: MyString
   gics_sub_industry: MyString
   headquarters_city: MyString
-  sp500_added_date: 2013-03-24
+  sp500_added_date: 2013-03-31
 
 two:
   symbol: MyString
@@ -16,4 +16,4 @@ two:
   gics_sector: MyString
   gics_sub_industry: MyString
   headquarters_city: MyString
-  sp500_added_date: 2013-03-24
+  sp500_added_date: 2013-03-31

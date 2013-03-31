@@ -1,6 +1,6 @@
-class CreateSp500Companies < ActiveRecord::Migration
+class CreateSp500Stocks < ActiveRecord::Migration
   def change
-    create_table :sp500_companies do |t|
+    create_table :sp500_stocks do |t|
       t.string :symbol
       t.string :company_name
       t.string :sec_filings

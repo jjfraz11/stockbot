@@ -1,2 +1,0 @@
-module Sp500CompaniesHelper
-end

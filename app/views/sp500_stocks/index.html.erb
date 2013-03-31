@@ -1,0 +1,35 @@
+<h1>Listing sp500_stocks</h1>
+
+<table>
+  <tr>
+    <th>Symbol</th>
+    <th>Company name</th>
+    <th>Sec filings</th>
+    <th>Gics sector</th>
+    <th>Gics sub industry</th>
+    <th>Headquarters city</th>
+    <th>Sp500 added date</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @sp500_stocks.each do |sp500_stock| %>
+  <tr>
+    <td><%= sp500_stock.symbol %></td>
+    <td><%= sp500_stock.company_name %></td>
+    <td><%= sp500_stock.sec_filings %></td>
+    <td><%= sp500_stock.gics_sector %></td>
+    <td><%= sp500_stock.gics_sub_industry %></td>
+    <td><%= sp500_stock.headquarters_city %></td>
+    <td><%= sp500_stock.sp500_added_date %></td>
+    <td><%= link_to 'Show', sp500_stock %></td>
+    <td><%= link_to 'Edit', edit_sp500_stock_path(sp500_stock) %></td>
+    <td><%= link_to 'Destroy', sp500_stock, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Sp500 stock', new_sp500_stock_path %>

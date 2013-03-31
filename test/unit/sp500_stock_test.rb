@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Sp500CompanyTest < ActiveSupport::TestCase
+class Sp500StockTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

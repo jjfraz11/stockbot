@@ -1,5 +1,5 @@
 Stockbot::Application.routes.draw do
-  resources :sp500_companies
+  resources :sp500_stocks
 
 
   resources :stock_prices

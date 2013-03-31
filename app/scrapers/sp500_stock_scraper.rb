@@ -1,6 +1,4 @@
 require_relative 'scraper'
-require_relative 'stock_price_scraper'
-require_relative '../models/stock_price'
 
 class SP500StockScraper < Scraper
 
@@ -36,28 +34,5 @@ class SP500StockScraper < Scraper
     out_row[:sp500_added_date]  = row[:date_first_added]
     out_row
   end
-
-  def build_database(options = {start_from: '2012-01-01'})
-    found = 0
-    end_date    = Date.today.strftime('%Y-%m-%d') 
-    report_type = 'day'
-    rows        = []
-
-    scrape.each do |stock| 
-      symbol = stock[:symbol] 
-
-      if stock[:sp500_added_date].empty?
-        start_date  = options[:start_from]
-      else
-        start_date = stock[:sp500_added_date]
-        found += 1
-      end
-      
-      stock_prices = StockPriceScraper.new( symbol, start_date, end_date, report_type
-                                             ).scrape(model: StockPrice)
-      p "#{symbol} - #{stock_prices.size}"
-      rows << stock_prices
-    end
-  end    
 
 end
