@@ -3,13 +3,12 @@ require 'active_support/core_ext/object/to_query'
 require 'active_support/inflector'
 require_relative '../../config/environment'
 
+USER_AGENT = 'Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0'
 
 class Scraper
-  USER_AGENT = 'Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0'
-  TABLE_CLASS  = nil
-  HEADER_CLASS = nil
-  DATA_CLASS   = nil
-  ROW_SIZE     = 0
+  @@header_class = nil
+  @@data_class   = nil
+  @@row_size     = 0
 
   attr_reader :agent, :page
 
@@ -59,9 +58,9 @@ class Scraper
     header = []
     data   = []
 
-    row_size     = self.class::ROW_SIZE
-    header_class = self.class::HEADER_CLASS
-    data_class   = self.class::DATA_CLASS
+    row_size     = @@row_size
+    header_class = @@header_class
+    data_class   = @@data_class
 
     rows.each do |row|
       cols = row.search('./th|td')
