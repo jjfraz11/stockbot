@@ -1,6 +1,8 @@
 require 'mechanize'
 require 'active_support/core_ext/object/to_query'
 require 'active_support/inflector'
+require_relative '../../config/environment'
+
 
 class Scraper
   USER_AGENT = 'Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0'
@@ -14,6 +16,7 @@ class Scraper
   def initialize
     @agent = Mechanize.new
     @agent.user_agent = USER_AGENT
+    @data_model = nil 
   end
 
   def base_url
@@ -48,11 +51,11 @@ class Scraper
   end
 
   def get_page
-    @page ||= self.agent.get(data_url)
+    @page = self.agent.get(data_url)
   end
 
-  def scrape(options = { rows: get_rows })
-    rows = options[:rows]
+  def scrape
+    rows = get_rows
     header = []
     data   = []
 
@@ -78,7 +81,10 @@ class Scraper
     end
 
     data.collect! do |row|
-      clean_row(Hash[header.zip(row)])
+      hash_row = Hash[header.zip(row)]
+      final_row = clean_row(hash_row)
+      @data_model.create(final_row) unless @data_model.nil? 
+      final_row
     end
   end
   
