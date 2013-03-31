@@ -1,0 +1,45 @@
+<%= form_for(@sp500_company) do |f| %>
+  <% if @sp500_company.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@sp500_company.errors.count, "error") %> prohibited this sp500_company from being saved:</h2>
+
+      <ul>
+      <% @sp500_company.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :symbol %><br />
+    <%= f.text_field :symbol %>
+  </div>
+  <div class="field">
+    <%= f.label :company_name %><br />
+    <%= f.text_field :company_name %>
+  </div>
+  <div class="field">
+    <%= f.label :sec_filings %><br />
+    <%= f.text_field :sec_filings %>
+  </div>
+  <div class="field">
+    <%= f.label :gics_sector %><br />
+    <%= f.text_field :gics_sector %>
+  </div>
+  <div class="field">
+    <%= f.label :gics_sub_industry %><br />
+    <%= f.text_field :gics_sub_industry %>
+  </div>
+  <div class="field">
+    <%= f.label :headquarters_city %><br />
+    <%= f.text_field :headquarters_city %>
+  </div>
+  <div class="field">
+    <%= f.label :sp500_added_date %><br />
+    <%= f.date_select :sp500_added_date %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

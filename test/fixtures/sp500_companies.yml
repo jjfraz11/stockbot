@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  symbol: MyString
+  company_name: MyString
+  sec_filings: MyString
+  gics_sector: MyString
+  gics_sub_industry: MyString
+  headquarters_city: MyString
+  sp500_added_date: 2013-03-24
+
+two:
+  symbol: MyString
+  company_name: MyString
+  sec_filings: MyString
+  gics_sector: MyString
+  gics_sub_industry: MyString
+  headquarters_city: MyString
+  sp500_added_date: 2013-03-24

@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Symbol:</b>
+  <%= @sp500_company.symbol %>
+</p>
+
+<p>
+  <b>Company name:</b>
+  <%= @sp500_company.company_name %>
+</p>
+
+<p>
+  <b>Sec filings:</b>
+  <%= @sp500_company.sec_filings %>
+</p>
+
+<p>
+  <b>Gics sector:</b>
+  <%= @sp500_company.gics_sector %>
+</p>
+
+<p>
+  <b>Gics sub industry:</b>
+  <%= @sp500_company.gics_sub_industry %>
+</p>
+
+<p>
+  <b>Headquarters city:</b>
+  <%= @sp500_company.headquarters_city %>
+</p>
+
+<p>
+  <b>Sp500 added date:</b>
+  <%= @sp500_company.sp500_added_date %>
+</p>
+
+
+<%= link_to 'Edit', edit_sp500_company_path(@sp500_company) %> |
+<%= link_to 'Back', sp500_companies_path %>
