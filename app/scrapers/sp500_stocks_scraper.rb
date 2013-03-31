@@ -1,5 +1,6 @@
 require_relative 'scraper'
 require_relative 'stock_prices_scraper'
+require_relative '../models/stock_price'
 
 class SP500StocksScraper < Scraper
 
@@ -39,25 +40,24 @@ class SP500StocksScraper < Scraper
 
   def build_database
     found = 0
-    start_date  = '2012-01-01'
-    end_date    = Time.now.strftime('%Y-%m-%d') 
+    end_date    = Date.today.strftime('%Y-%m-%d') 
     report_type = 'day'
     rows        = []
 
     sp500 = self.scrape.each do |stock| 
       symbol = stock[:symbol] 
 
-      unless stock[:sp500_added_date].empty?
-        start_date = stock[:sp500_added_date]
-        found += 1
+     if stock[:sp500_added_date].empty?
+       start_date  = '2012-01-01'
+     else
+       start_date = stock[:sp500_added_date]
+       found += 1
       end
 
-      stock_prices = StockPricesScraper.new(symbol, start_date, end_date, report_type).scrape
-      rows << ( stock_prices.size )
-      if found > 1
-        p rows
-        exit
-      end
+      stock_prices = StockPricesScraper.new( symbol, start_date, end_date, report_type
+                                             ).scrape(model: StockPrice)
+      p "#{symbol} - #{stock_prices.size}"
+      rows << stock_prices
     end
   end    
 
