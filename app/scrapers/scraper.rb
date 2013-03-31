@@ -3,9 +3,9 @@ require 'active_support/core_ext/object/to_query'
 require 'active_support/inflector'
 require_relative '../../config/environment'
 
-USER_AGENT = 'Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0'
 
 class Scraper
+  @@user_agent = 'Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0'
   @@header_class = nil
   @@data_class   = nil
   @@row_size     = 0
@@ -14,7 +14,7 @@ class Scraper
 
   def initialize
     @agent = Mechanize.new
-    @agent.user_agent = USER_AGENT
+    @agent.user_agent = @@user_agent
     @data_model = nil 
   end
 
