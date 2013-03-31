@@ -80,4 +80,8 @@ class Sp500StocksController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def build_database
+    Sp500StockScraper.new.scrape( model: Sp500Stock )
+  end
 end
