@@ -1,6 +1,6 @@
 require_relative 'scraper'
 
-class SP500StockScraper < Scraper
+class Sp500StockScraper < Scraper
 
   class ReportTypeError < RuntimeError; end
 
@@ -33,6 +33,11 @@ class SP500StockScraper < Scraper
     out_row[:headquarters_city] = row[:address_of_headquarters]
     out_row[:sp500_added_date]  = row[:date_first_added]
     out_row
+  end
+
+  def scrape(options = { model: nil })
+    @data_model = options[:model]
+    super()
   end
 
 end
