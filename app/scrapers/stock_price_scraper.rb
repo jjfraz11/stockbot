@@ -6,10 +6,9 @@ class StockPriceScraper < Scraper
 
   attr_accessor :symbol, :start_date, :end_date, :report_type
 
-  TABLE_CLASS  = 'yfnc_datamodoutline1'
-  HEADER_CLASS = 'yfnc_tablehead1'
-  DATA_CLASS   = 'yfnc_tabledata1'
-  ROW_SIZE     = 7
+  @@header_class = 'yfnc_tablehead1'
+  @@data_class   = 'yfnc_tabledata1'
+  @@row_size     = 7
 
   def initialize(symbol, start_date, end_date, type)
     @symbol = symbol.upcase
@@ -55,7 +54,7 @@ class StockPriceScraper < Scraper
   end
 
   def get_rows
-    get_page.search("table[@class='#{TABLE_CLASS}']/tr//tr")
+    get_page.search("table[@class='yfnc_datamodoutline1']/tr//tr")
   end
 
   def scrape(options = { model: nil })
