@@ -1,5 +1,5 @@
 require_relative 'scraper'
-require_relative 'stock_prices_scraper'
+require_relative 'stock_price_scraper'
 require_relative '../models/stock_price'
 
 class SP500StockScraper < Scraper
@@ -53,7 +53,7 @@ class SP500StockScraper < Scraper
         found += 1
       end
       
-      stock_prices = StockPricesScraper.new( symbol, start_date, end_date, report_type
+      stock_prices = StockPriceScraper.new( symbol, start_date, end_date, report_type
                                              ).scrape(model: StockPrice)
       p "#{symbol} - #{stock_prices.size}"
       rows << stock_prices
