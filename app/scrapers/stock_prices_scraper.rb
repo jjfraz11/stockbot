@@ -13,8 +13,8 @@ class StockPricesScraper < Scraper
 
   def initialize(symbol, start_date, end_date, type)
     @symbol = symbol.upcase
-    @start_time = Time.parse(start_date)
-    @end_time = Time.parse(end_date)
+    @start_date = Date.parse(start_date)
+    @end_date = Date.parse(end_date)
     @report_type = get_report_type(type)
     super()
   end
@@ -27,12 +27,12 @@ class StockPricesScraper < Scraper
     # ?s=YHOO&a=03&b=12&c=1996&d=02&e=11&f=2013&g=d
     {
       :s => @symbol,
-      :a => "%02d" % ( @start_time.month - 1),
-      :b => "%02d" % @start_time.day,
-      :c => "%04d" % @start_time.year,
-      :d => "%02d" % ( @end_time.month - 1 ),
-      :e => "%02d" % @end_time.day,
-      :f => "%04d" % @end_time.year,
+      :a => "%02d" % ( @start_date.month - 1),
+      :b => "%02d" % @start_date.day,
+      :c => "%04d" % @start_date.year,
+      :d => "%02d" % ( @end_date.month - 1 ),
+      :e => "%02d" % @end_date.day,
+      :f => "%04d" % @end_date.year,
       :g => @report_type
     }
   end
@@ -40,7 +40,7 @@ class StockPricesScraper < Scraper
   def clean_row(row)
     out_row = {}
     out_row[:symbol]    =  @symbol
-    out_row[:date]      =  Time.parse(row[:date]).strftime('%Y-%m-%d')
+    out_row[:date]      =  Date.parse(row[:date]).strftime('%Y-%m-%d')
     out_row[:open]      =  Float(row[:open])
     out_row[:high]      =  Float(row[:high])
     out_row[:low]       =  Float(row[:low])
@@ -58,6 +58,24 @@ class StockPricesScraper < Scraper
     get_page.search("table[@class='#{TABLE_CLASS}']/tr//tr")
   end
 
+  def scrape(options = { model: nil })
+    rows = []
+    init_start_date = @start_date
+    init_end_date   = @end_date
+    @data_model = options[:model]
+
+    (init_start_date..init_end_date).each_slice(90) do |date_range|
+      @start_date = date_range.first
+      @end_date = date_range.last
+      rows += super()
+    end
+
+    @start_date = init_start_date
+    @end_date   = init_end_date
+    @data_model = nil
+    rows.flatten
+  end
+
   protected
 
   def get_report_type(report_type)
@@ -72,11 +90,3 @@ class StockPricesScraper < Scraper
   end
 
 end
-
-
-s = StockPricesScraper.new('LNKD', '2013-2-1', '2013-2-28', 'day')
-p s.data_url
-p s.scrape[0..9]
-s.symbol = 'GOOG'
-p s.data_url
-p s.scrape[0..9]
