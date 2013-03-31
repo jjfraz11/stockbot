@@ -1,8 +1,8 @@
 Stockbot::Application.routes.draw do
-  resources :sp500_stocks
-
-
   resources :stock_prices
+
+
+  resources :sp500_stocks
 
 
   # The priority is based upon order of creation:

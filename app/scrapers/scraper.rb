@@ -8,7 +8,7 @@ class Scraper
   @@user_agent = 'Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0'
   @@header_class = nil
   @@data_class   = nil
-  @@row_size     = 0
+  @@min_row_size = 0
 
   attr_reader :agent, :page
 
@@ -58,20 +58,16 @@ class Scraper
     header = []
     data   = []
 
-    row_size     = @@row_size
-    header_class = @@header_class
-    data_class   = @@data_class
-
     rows.each do |row|
       cols = row.search('./th|td')
-      next unless cols.size == row_size
+      next unless cols.size >= @@min_row_size
       
       temp_row = []
       cols.each do |col|
-        if col.name == 'th' or col['class'] == header_class
+        if col.name == 'th' or col['class'] == @@header_class
           next if col.text == nil
           header << col.text[/^[\w ]+\w/].downcase.parameterize('_').to_sym
-        elsif col.name == 'td' or col['class'] == data_class
+        elsif col.name == 'td' or col['class'] == @@data_class
           temp_row << col.text
         end
       end

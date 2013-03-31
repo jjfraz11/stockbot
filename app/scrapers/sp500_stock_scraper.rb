@@ -6,7 +6,7 @@ class Sp500StockScraper < Scraper
 
   @@header_class = 'headerSort'
   @@data_class   = nil
-  @@row_size     = 7
+  @@min_row_size = 6
 
   def initialize()
     super()

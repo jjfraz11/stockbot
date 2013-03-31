@@ -81,7 +81,7 @@ class Sp500StocksController < ApplicationController
     end
   end
 
-  def build_database
+  def Sp500StocksController.build_database
     Sp500StockScraper.new.scrape( model: Sp500Stock )
   end
 end

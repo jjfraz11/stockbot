@@ -2,7 +2,7 @@
 
 one:
   symbol: MyString
-  date: 2013-03-10
+  date: 2013-03-31
   high: 1.5
   low: 1.5
   volume: 1
@@ -12,7 +12,7 @@ one:
 
 two:
   symbol: MyString
-  date: 2013-03-10
+  date: 2013-03-31
   high: 1.5
   low: 1.5
   volume: 1

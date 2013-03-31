@@ -8,7 +8,7 @@ class StockPriceScraper < Scraper
 
   @@header_class = 'yfnc_tablehead1'
   @@data_class   = 'yfnc_tabledata1'
-  @@row_size     = 7
+  @@min_row_size = 7
 
   def initialize(symbol, start_date, end_date, type)
     @symbol = symbol.upcase
