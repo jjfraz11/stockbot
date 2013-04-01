@@ -83,4 +83,14 @@ class Scraper
     end
   end
   
+  def get_date(date)
+    if date.is_a? Date
+      date
+    elsif date.respond_to?(:to_date)
+      date.to_date
+    else
+      Date.parse(date)
+    end
+  end
+
 end
