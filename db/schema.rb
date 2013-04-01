@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130331161154) do
+ActiveRecord::Schema.define(:version => 20130331171544) do
 
   create_table "sp500_stocks", :force => true do |t|
     t.string   "symbol"
