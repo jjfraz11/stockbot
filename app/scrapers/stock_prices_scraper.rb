@@ -1,6 +1,6 @@
 require_relative 'scraper'
 
-class StockPriceScraper < Scraper
+class StockPricesScraper < Scraper
 
   class ReportTypeError < RuntimeError; end
 
@@ -11,9 +11,9 @@ class StockPriceScraper < Scraper
   @@min_row_size = 7
 
   def initialize(symbol, start_date, end_date, type)
-    @symbol = symbol.upcase
-    @start_date = Date.parse(start_date)
-    @end_date = Date.parse(end_date)
+    @symbol      = symbol.upcase
+    @start_date  = get_date(start_date)
+    @end_date    = get_date(end_date)
     @report_type = get_report_type(type)
     super()
   end
