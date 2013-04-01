@@ -98,8 +98,9 @@ class StockPricesController < ApplicationController
       
       stock_prices = StockPricesScraper.new( stock.symbol, start_date, end_date, report_type
                                              ).scrape(model: StockPrice)
-      p "#{stock.symbol} - #{stock_prices.size}"
+      puts "Added: #{stock.symbol}. #{stock_prices.size} days of data."
     end
+    puts "Built Stock Prices database."
   end 
 
 end
