@@ -1,3 +1,5 @@
+require Rails.root.join('app', 'scrapers', 'stock_prices_scraper').to_s
+
 class StockPricesController < ApplicationController
   # GET /stock_prices
   # GET /stock_prices.json
@@ -80,4 +82,24 @@ class StockPricesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def self.build_database(options = {start_from: '2012-01-01'})
+    found = 0
+    end_date    = Date.today.strftime('%Y-%m-%d') 
+    report_type = 'day'
+
+    Sp500Stock.all.each do |stock|
+      if stock.sp500_added_date.nil?
+        start_date  = options[:start_from]
+      else
+        start_date = stock.sp500_added_date
+        found += 1
+      end
+      
+      stock_prices = StockPricesScraper.new( stock.symbol, start_date, end_date, report_type
+                                             ).scrape(model: StockPrice)
+      p "#{stock.symbol} - #{stock_prices.size}"
+    end
+  end 
+
 end
