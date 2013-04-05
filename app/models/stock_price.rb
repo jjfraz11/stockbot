@@ -30,7 +30,7 @@ class StockPrice < ActiveRecord::Base
       stock_prices = scrape_stock_data(stock, options[:start_date], options[:end_date])
       
       ##### Add Stock Bollinger Bands #####
-      add_bollinger_bands(stock.symbol)
+      add_bollinger_bands(stock.symbol, :num_days => 20)
       
       puts "Added: #{stock.symbol.ljust(5)}" + 
         " - #{stock_prices.size.to_s.rjust(4)} days of data."
@@ -80,6 +80,7 @@ class StockPrice < ActiveRecord::Base
       order("date desc").limit(options[:num_days])
 
     values = []
+    stock_prices = []
     stock_data.reverse_each do |stock_price|
       if values.size < options[:num_days]
         values << stock_price.close
@@ -87,11 +88,13 @@ class StockPrice < ActiveRecord::Base
         stock_price.mavg_20   = values.mean.round(2)
         stock_price.stddev_20 = values.deviation.round(8)
         stock_price.save
+        stock_prices << stock_price
 
         values.shift
         values << stock_price.close
       end
     end
+    stock_prices
   end
 
 end
