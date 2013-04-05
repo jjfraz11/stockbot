@@ -13,7 +13,8 @@ class StockPrice < ActiveRecord::Base
       stock_model: Sp500Stock, 
       start_date:  '2011-01-11',
       end_date:    Date.today.strftime('%Y-%m-%d'),
-      date_method: :sp500_added_date
+      date_method: :sp500_added_date,
+      bb_days:     20
     }.merge(options)
     missing_stocks = []
 
@@ -38,10 +39,9 @@ class StockPrice < ActiveRecord::Base
       stock_prices = scrape_stock_data(stock, start_date, options[:end_date])
       
       ##### Add Stock Bollinger Bands #####
-      add_bollinger_bands(stock.symbol, :num_days => 20)
+      add_bollinger_bands(stock.symbol, options[:bb_days])
       
-      puts "Added: #{stock.symbol.ljust(5)}" + 
-        " - #{stock_prices.size.to_s.rjust(4)} days of data."
+      puts "#{stock.symbol.ljust(5)} - #{stock_prices.size.to_s.rjust(4)} added."
       missing_stocks << stock.symbol if stock_prices.empty?
     end
     puts "Missing Stocks: #{missing_stocks.join(', ')}" unless missing_stocks.empty?
