@@ -81,8 +81,4 @@ class Sp500StocksController < ApplicationController
     end
   end
 
-  def Sp500StocksController.build_database
-    sp500_stocks = Sp500StockScraper.new.scrape( model: Sp500Stock )
-    puts "Built SP500 database. #{sp500_stocks.size} stocks scraped."
-  end
 end

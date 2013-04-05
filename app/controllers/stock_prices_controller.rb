@@ -1,5 +1,3 @@
-require Rails.root.join('app', 'scrapers', 'stock_prices_scraper').to_s
-
 class StockPricesController < ApplicationController
   # GET /stock_prices
   # GET /stock_prices.json
@@ -82,41 +80,5 @@ class StockPricesController < ApplicationController
       format.json { head :no_content }
     end
   end
-
-  def self.build_database(options = {start_date: '2013-01-01'})
-    end_date    = Date.today.strftime('%Y-%m-%d') 
-    report_type = 'day'
-    missing_stocks = []
-
-    Sp500Stock.all.each do |stock|
-      if ( stock.sp500_added_date.nil? or
-           stock.sp500_added_date < options[:start_date].to_date )
-        start_date  = options[:start_date]
-      else
-        start_date = stock.sp500_added_date
-      end
-      
-      begin
-        stock_prices = StockPricesScraper.new( stock.symbol,
-                                               start_date,
-                                               end_date,
-                                               report_type ).scrape(model: StockPrice)
-      rescue Scraper::ScraperDataError => e
-        puts e.message
-        fix_symbol = stock.symbol.gsub(".", "-")
-        puts "Retrying with: #{fix_symbol}"
-        stock_prices = StockPricesScraper.new( fix_symbol,
-                                               start_date,
-                                               end_date,
-                                               report_type ).scrape(model: StockPrice)
-      end
-      
-      puts "Added: #{stock.symbol.ljust(5)}" + 
-        " - #{stock_prices.size.to_s.rjust(4)} days of data."
-      missing_stocks << stock.symbol if stock_prices.empty?
-    end
-    puts "Missing Stocks: #{missing_stocks.join(', ')}" unless missing_stocks.empty?
-    puts "Built Stock Prices database."
-  end 
 
 end
