@@ -1,10 +1,10 @@
 require 'mechanize'
 require 'active_support/core_ext/object/to_query'
 require 'active_support/inflector'
-require_relative '../../config/environment'
-
 
 class Scraper
+  class ScraperDataError < RuntimeError; end
+
   @@user_agent = 'Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0'
   @@header_class = nil
   @@data_class   = nil
@@ -78,9 +78,12 @@ class Scraper
     data.collect! do |row|
       hash_row = Hash[header.zip(row)]
       final_row = clean_row(hash_row)
-      @data_model.create(final_row) unless @data_model.nil? 
+      @data_model.create(final_row) unless @data_model.nil?
       final_row
     end
+
+    raise ScraperDataError, "No data returned for #{self.data_url}" if data.empty?
+    data
   end
   
   def get_date(date)

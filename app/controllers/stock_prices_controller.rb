@@ -83,23 +83,39 @@ class StockPricesController < ApplicationController
     end
   end
 
-  def self.build_database(options = {start_from: '2012-01-01'})
-    found = 0
+  def self.build_database(options = {start_date: '2013-01-01'})
     end_date    = Date.today.strftime('%Y-%m-%d') 
     report_type = 'day'
+    missing_stocks = []
 
     Sp500Stock.all.each do |stock|
-      if stock.sp500_added_date.nil?
-        start_date  = options[:start_from]
+      if ( stock.sp500_added_date.nil? or
+           stock.sp500_added_date < options[:start_date].to_date )
+        start_date  = options[:start_date]
       else
         start_date = stock.sp500_added_date
-        found += 1
       end
       
-      stock_prices = StockPricesScraper.new( stock.symbol, start_date, end_date, report_type
-                                             ).scrape(model: StockPrice)
-      puts "Added: #{stock.symbol}. #{stock_prices.size} days of data."
+      begin
+        stock_prices = StockPricesScraper.new( stock.symbol,
+                                               start_date,
+                                               end_date,
+                                               report_type ).scrape(model: StockPrice)
+      rescue Scraper::ScraperDataError => e
+        puts e.message
+        fix_symbol = stock.symbol.gsub(".", "-")
+        puts "Retrying with: #{fix_symbol}"
+        stock_prices = StockPricesScraper.new( fix_symbol,
+                                               start_date,
+                                               end_date,
+                                               report_type ).scrape(model: StockPrice)
+      end
+      
+      puts "Added: #{stock.symbol.ljust(5)}" + 
+        " - #{stock_prices.size.to_s.rjust(4)} days of data."
+      missing_stocks << stock.symbol if stock_prices.empty?
     end
+    puts "Missing Stocks: #{missing_stocks.join(', ')}" unless missing_stocks.empty?
     puts "Built Stock Prices database."
   end 
 
