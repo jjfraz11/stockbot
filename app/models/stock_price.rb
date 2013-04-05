@@ -1,6 +1,8 @@
 require Rails.root.join('lib','stats').to_s
 
 class StockPrice < ActiveRecord::Base
+  class NoDataError < RuntimeError; end
+
   attr_accessible :adj_close, :close, :date, :high, :low, :open, :symbol, :volume
 
   validates :symbol, :uniqueness => { :scope => :date,
@@ -8,26 +10,32 @@ class StockPrice < ActiveRecord::Base
 
   def self.build_database(options = {})
     options = {
-      start_date: '2011-01-11',
-      end_date:   Date.today.strftime('%Y-%m-%d')
+      stock_model: Sp500Stock, 
+      start_date:  '2011-01-11',
+      end_date:    Date.today.strftime('%Y-%m-%d'),
+      date_method: :sp500_added_date
     }.merge(options)
     missing_stocks = []
 
-    ##### This should be decoupled from the Sp500 stock model
-    ##### Should accept any collection of stocks that have a
-    ##### added_date and symbol.
+    stocks = options[:stock_model].all
+    if stocks.empty?
+      options[:stock_model].build_database
+      stocks = options[:stock_model].all
+      rails NoDataError, "#{options[:stock_model]} has no data." if stocks.empty? 
+    end
 
     ##### Loop through collection of stocks and gather data for each symbol
-    Sp500Stock.all.each do |stock|
-      if ( stock.sp500_added_date.nil? or
-           stock.sp500_added_date < options[:start_date].to_date )
+    stocks.each do |stock|
+      #### Set temp start date based on date_method if provided
+      if ( stock.send(options[:date_method]).nil? or
+           stock.send(options[:date_method]) < options[:start_date].to_date )
         start_date  = options[:start_date]
       else
-        start_date = stock.sp500_added_date
+        start_date = stock.send(options[:date_method])
       end
 
       ##### Scrape Basic Stock Data #####
-      stock_prices = scrape_stock_data(stock, options[:start_date], options[:end_date])
+      stock_prices = scrape_stock_data(stock, start_date, options[:end_date])
       
       ##### Add Stock Bollinger Bands #####
       add_bollinger_bands(stock.symbol, :num_days => 20)
