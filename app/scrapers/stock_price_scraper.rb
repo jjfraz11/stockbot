@@ -1,6 +1,6 @@
 require_relative 'scraper'
 
-class StockPricesScraper < Scraper
+class StockPriceScraper < Scraper
 
   class ReportTypeError < RuntimeError; end
 
