@@ -9,14 +9,16 @@ class StockPriceBuilder < Builder
     @options = options
   end
 
-  def build(options = {})
+  def build(opts = {})
     options = {
-      stock_model:            Sp500Stock, 
-      start_date:             '2011-01-11',
-      end_date:               Date.today.strftime('%Y-%m-%d'),
-      added_date_sym:         :sp500_added_date,
-      n_days_bollinger_bands: 20
-    }.merge(options)
+      stock_model:              Sp500Stock, 
+      start_date:               '2011-01-11',
+      end_date:                 Date.today.strftime('%Y-%m-%d'),
+      added_date_sym:           :sp500_added_date,
+      n_days_bollinger_bands:   20,
+      n_days_relative_strength: 9,
+      n_days_money_flow:        5
+    }.merge(opts)
     missing_stocks = []
 
     stocks = options[:stock_model].all
@@ -39,9 +41,13 @@ class StockPriceBuilder < Builder
       ##### Scrape Basic Stock Data #####
       stock_prices = scrape_stock_data(stock, start_date, options[:end_date])
       
-      ##### Add Stock Bollinger Bands #####
-      add_bollinger_bands(stock.symbol, options[:n_days_bollinger_bands])
+      ##### Add Stock Signal Attributes #####
+      add_bollinger_bands(stock.symbol, options)
       
+      add_relative_strength_index(stock.symbol, options)
+
+      add_money_flow_index(stock.symbol, options)
+
       puts "#{stock.symbol.ljust(5)} - #{stock_prices.size.to_s.rjust(4)} added."
       missing_stocks << stock.symbol if stock_prices.empty?
     end
@@ -100,6 +106,7 @@ class StockPriceBuilder < Builder
   end
 
   def add_relative_strength_index(symbol, options = {})
+    options = { :num_days => options } if options.is_a? Fixnum
     options = {
       :start_date => @model.where(:symbol => symbol).order("date asc").limit(1).first.date,
       :end_date   => @model.where(:symbol => symbol).order("date desc").limit(1).first.date,
@@ -132,6 +139,7 @@ class StockPriceBuilder < Builder
   end
 
   def add_money_flow_index(symbol, options = {})
+    options = { :num_days => options } if options.is_a? Fixnum
     options = {
       :start_date => @model.where(:symbol => symbol).order("date asc").limit(1).first.date,
       :end_date   => @model.where(:symbol => symbol).order("date desc").limit(1).first.date,
@@ -152,7 +160,7 @@ class StockPriceBuilder < Builder
         positive_money_flow = values.collect { |e| if e[0] > 0 then e[1] else 0 end }.sum
         negative_money_flow = values.collect { |e| if e[0] < 0 then e[1].abs else 0 end }.sum
         money_flow_index = 100 * ( positive_money_flow / 
-                                   ( positive_money_flow + negative_monety_flow ) )
+                                   ( positive_money_flow + negative_money_flow ) )
         # p positive_money_flow, negative_money_flow, money_flow_index
         stock_price.money_flow_index = money_flow_index
         stock_price.save
