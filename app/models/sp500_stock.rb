@@ -3,8 +3,4 @@ class Sp500Stock < ActiveRecord::Base
 
   validates :symbol, :uniqueness => true
 
-  def self.build_database
-    sp500_stocks = Sp500StockScraper.new.scrape( model: Sp500Stock )
-    puts "Built SP500 database. #{sp500_stocks.size} stocks scraped."
-  end
 end
