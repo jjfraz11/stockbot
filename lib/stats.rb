@@ -40,6 +40,18 @@ class Array
     end;self
   end
   def sample n=1 ; (0...n).collect{ self[rand(self.size)] } ; end
+
+  def ema(n = self.size)
+    init = self[0..n-1]
+    rest = self[n..-1]
+    emas = [ init.mean ]
+    rest.each { |curr| emas << update_ema(curr, emas.last, n) } unless rest.nil?
+    emas
+  end
+
+  def update_ema(current, previous, n)
+    ( current - previous ) * ( 2.0 / ( n + 1 ) ) + previous
+  end
 end
 
 if __FILE__ == $0
