@@ -3,4 +3,8 @@ class Sp500Stock < ActiveRecord::Base
 
   validates :symbol, :uniqueness => true
 
+  def build_database
+    builder = Sp500StockBuilder.new
+    builder.build
+  end
 end
