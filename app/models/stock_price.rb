@@ -16,4 +16,8 @@ class StockPrice < ActiveRecord::Base
     typical_price * volume
   end
 
+  def StockPrice.build_database
+    builder = StockPriceBuilder.new
+    builder.build
+  end
 end
